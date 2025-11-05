@@ -25,6 +25,9 @@ COPY package.json package-lock.json ./
 ENV npm_config_cache=/tmp/.npm
 RUN npm config set maxsockets 3
 
+RUN npm config set strict-ssl false
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+
 # Install dependencies with better reliability settings
 RUN npm config set registry https://registry.npmjs.org/ && \
     npm ci --omit=dev --verbose
@@ -34,6 +37,7 @@ COPY . .
 COPY LICENSE /app/LICENSE
 
 # Build the application (creates fresh .next directory)
+RUN npm install
 RUN npm run build
 
 # Verify build output exists and show final structure
